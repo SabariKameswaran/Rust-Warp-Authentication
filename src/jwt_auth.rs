@@ -1,7 +1,7 @@
 // use jsonwebtoken::{decode, DecodingKey, Validation};
 // use serde::Serialize;
 // use uuid::Uuid;
-// use warp::{reject, Rejection, Reply};
+// use warp::Rejection;
 
 // use crate::config::Config;
 // use crate::model::TokenClaims;
@@ -54,5 +54,4 @@
 
 //     Ok(user_id)
 // }
-
 

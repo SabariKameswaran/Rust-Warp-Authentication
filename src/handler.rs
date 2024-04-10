@@ -176,37 +176,37 @@ async fn login_user_handler(
 //     Ok(response_with_json_content_type)
 // }
 
-fn logout_handler(_:jwt_auth::jwt_middleware) -> Result<impl warp::Reply, Rejection> {
-    let cookie_value = "token=; Path=/; Max-Age=-1; HttpOnly";
+// fn logout_handler(_:jwt_auth::jwt_middleware) -> Result<impl warp::Reply, Rejection> {
+//     let cookie_value = "token=; Path=/; Max-Age=-1; HttpOnly";
 
-    let json_response = reply::json(&json!({
-        "status": "success"
-    }));
+//     let json_response = reply::json(&json!({
+//         "status": "success"
+//     }));
 
-    let response_with_cookie = warp::reply::with_header(
-        json_response,
-        SET_COOKIE,
-        HeaderValue::from_str(cookie_value).unwrap(),
-    );
+//     let response_with_cookie = warp::reply::with_header(
+//         json_response,
+//         SET_COOKIE,
+//         HeaderValue::from_str(cookie_value).unwrap(),
+//     );
 
-    Ok(response_with_cookie)
-}
+//     Ok(response_with_cookie)
+// }
 
-async fn get_me_handler(user_id: Uuid, pool: Pool<Postgres>) -> Result<impl Reply, Rejection> {
-    let user = sqlx::query_as!(User, "SELECT * FROM users WHERE id = $1", user_id)
-        .fetch_one(&pool)
-        .await
-        .unwrap();
+// async fn get_me_handler(user_id: Uuid, pool: Pool<Postgres>) -> Result<impl Reply, Rejection> {
+//     let user = sqlx::query_as!(User, "SELECT * FROM users WHERE id = $1", user_id)
+//         .fetch_one(&pool)
+//         .await
+//         .unwrap();
 
-    let json_response = json!({
-        "status": "success",
-        "data": json!({
-            "user": filter_user_record(&user)
-        })
-    });
+//     let json_response = json!({
+//         "status": "success",
+//         "data": json!({
+//             "user": filter_user_record(&user)
+//         })
+//     });
 
-    Ok(warp::reply::json(&json_response))
-}
+//     Ok(warp::reply::json(&json_response))
+// }
 
 pub fn routes(
     pool: Pool<Postgres>,
@@ -229,25 +229,25 @@ pub fn routes(
         .and(with_pool(pool.clone()))
         .and_then(login_user_handler);
 
-    let logout_handler = warp::path("api")
-        .and(warp::path("auth"))
-        .and(warp::path("logout"))
-        .and(warp::get())
-        .and(jwt_auth::jwt_middleware(config.clone(), None))
-        .and_then(logout_handler);
+    // let logout_handler = warp::path("api")
+    //     .and(warp::path("auth"))
+    //     .and(warp::path("logout"))
+    //     .and(warp::get())
+    //     .and(jwt_auth::jwt_middleware(config.clone(), None))
+    //     .and_then(logout_handler);
 
-    let get_me_handler = warp::path("api")
-        .and(warp::path("users"))
-        .and(warp::path("me"))
-        .and(warp::get())
-        .and(jwt_auth::authenticate(config.clone(),  warp::header::value("Authorization")))
-        .and(with_pool(pool.clone()))
-        .and_then(get_me_handler);
+    // let get_me_handler = warp::path("api")
+    //     .and(warp::path("users"))
+    //     .and(warp::path("me"))
+    //     .and(warp::get())
+    //     .and(jwt_auth::authenticate(config.clone(),  warp::header::value("Authorization")))
+    //     .and(with_pool(pool.clone()))
+    //     .and_then(get_me_handler);
 
     register_user_handler
         .or(login_user_handler)
-        .or(logout_handler)
-        .or(get_me_handler)
+        // .or(logout_handler)
+        // .or(get_me_handler)
 }
 
 fn with_pool(
